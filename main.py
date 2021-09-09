@@ -1,30 +1,47 @@
 from src.classes.cidade import Cidade
-import json
+from src.db.manipulabanco import add_cidade, get_lista_cidade
 
-sair = False
-lista_cidades=[]
+def cadastra_cidade():   
+    print("### Cadastro de cidade ###")
+    nome_cidade = input('Digite o nome da cidade: ').title()
+    populacao_cidade = (input('Digite a população da cidade: '))
+    
+    while not populacao_cidade.isnumeric():
+        print('Numero inválido')
+        populacao_cidade = (input('Digite a população da cidade: '))
+    
+    sigla_estado = input('Digite a sigla do estado: ').upper()
+    
+    while not sigla_estado.isalpha() or len(sigla_estado) > 2:
+        print('Sigla inválida')
+        sigla_estado = input('Digite a sigla do estado: ').upper()
+   
+    nome_estado = input('Digite o nome do estado: ').title()
 
-while sair == False:
-    nome_cidade= input("Digite o nome da cidade: ")
-    populacao_cidade= int(input("Digite a populaçao da cidade: "))
-    sigla_estado= input("Digite a sigla do estado: ")
-    nome_estado= input("Digite o nome do estado: ")
+    uf = {'sigla': sigla_estado, 'nome': nome_estado}
+    nova_cidade = Cidade(nome_cidade, populacao_cidade, uf)
 
-    nova_cidade= Cidade(nome_cidade, populacao_cidade,{"sigla": sigla_estado, "nome": nome_estado})
-    lista_cidades.append({
-        "nome": nova_cidade.nome,
-        "populacao": nova_cidade.populacao,
-        "uf": {
-            "sigla":nova_cidade.uf["sigla"],
-            "nome":nova_cidade.uf["nome"]
-        }
-    })
-    r= input("Deseja cadastra mais uma cidade ? (S/N): ")
-    if r.upper() == "N":
-        sair = True
+    add_cidade(nova_cidade)
 
-arquivo= open("./src/bd/bd.json", 'w')
-arquivo.write(json.dumps(lista_cidades))
-arquivo.close()
+def imprime_menu():
+    print(''' 
+    ######## Funções  #########
+    1- Listar todas as cidades
+    2- Cadastra uma nova cidade
+    ###########################
+    0 - Sair
+    ''')
+    menu= input("Digite a função desejada: ")
+    if menu == "1":
+        print(get_lista_cidade())
+        imprime_menu()
+    elif menu == "2":
+        cadastra_cidade()
+        imprime_menu()
+    elif menu == "0":
+        print("Até logo")
+    else:
+        print("Escolha uma opção valida: ")
+        imprime_menu()
 
-
+imprime_menu()
