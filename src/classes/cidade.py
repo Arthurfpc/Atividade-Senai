@@ -4,6 +4,12 @@ class Cidade:
         self.__populacao = populacao
         self.__uf = uf 
 
+    def __str__(self):
+        return f'''
+        Nome: \t\t{self.__nome}
+        População: \t{self.__populacao}
+        Estado: \t{self.__uf["sigla"]} -- {self.__uf["nome"]}'''
+
     @property
     def nome(self):
         return self.__nome
